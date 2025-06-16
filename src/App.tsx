@@ -12,6 +12,7 @@ function App() {
     'Hercule Poirot',
     'Miss Marple',
     'Feluda',
+    'Byomkesh Bakshi',
     'Philip Marlowe',
   ];
 
@@ -20,13 +21,12 @@ function App() {
     '#3498db',
     '#a9dfbf',
     '#5b2c6f',
-    '#5f6a6a',
-    '#73c6b6',
+    '#e74c3c',
+    '#f39c12',
   ];
 
   const jsConfetti = new JSConfetti();
   const ANGLE_PER_SEGMENT = (2 * Math.PI) / segments.length;
-  const POINTER_ANGLE = 3 * Math.PI /2;
   const POINTER_SEGMENT_INDEX = computePointerSegmentIndex(segments);
   const [ currentSegment, setCurrentSegment ] = useState<string>(segments[POINTER_SEGMENT_INDEX]);
   const [ isSpinning, setIsSpinning ] = useState<boolean>(false);
@@ -40,23 +40,15 @@ function App() {
   useEffect(() => {
     drawWheel();
     if (!isSpinning) {
-      const newCurrentSegment = computeCurrentSegment(angle, segments, POINTER_SEGMENT_INDEX);
-      console.log('Current Segment:', newCurrentSegment);
+      const newCurrentSegment = computeCurrentSegment(angle, segments);
       setCurrentSegment(newCurrentSegment);
     }
   }, [angle]);
 
   useEffect(() => {
     drawButton();
-
-    for (let i = 0; i < segments.length; i++) {
-      const startAngle = angle + i * ANGLE_PER_SEGMENT;
-      const endAngle = startAngle + ANGLE_PER_SEGMENT;
-      if (startAngle <= POINTER_ANGLE && endAngle >= POINTER_ANGLE) {
-        setCurrentSegment(segments[i]);
-        break;
-      }
-    }
+    const initialSegment = computeCurrentSegment(angle, segments);
+    setCurrentSegment(initialSegment);
     setDisplayText('Spin the wheel to find a winner!');
   }, []);
 
@@ -73,7 +65,7 @@ function App() {
     ctx.lineTo(wheelRadius - 20, 40);
     ctx.lineTo(wheelRadius + 20, 40);
     ctx.closePath();
-    ctx.fillStyle = 'red';
+    ctx.fillStyle = 'black';
     ctx.fill();
   };
 
